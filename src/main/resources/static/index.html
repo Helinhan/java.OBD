@@ -1,0 +1,26 @@
+<html>
+<head>
+<script src="config/define.js"></script>
+<script src="library/jquery/jquery-3.3.1.min.js"></script>
+<script src="library/jquery/plugin/yuenjee/jquery.yuenjee.js"></script>
+<script src="library/jquery/plugin/session/jquery.session.js"></script>
+</head>
+<body>
+<div id="DD"></div><br/>
+<div id="DIV"></div>
+</body>
+</html>
+
+<script>
+$(function () {
+
+    $("#DD").html($.yuenjee.url("a","b","c","d")+ $.yuenjee.api("{0}/{1}/fdsfd/{2}","b","c","d"));
+
+    if ($.yuenjee.isNull($.session.get('key'))){
+        $("#DIV").html("no session,addit");
+        $.session.set('key', 'a value');
+    } else {
+        $("#DIV").html("hav session:"+$.session.get('key'));
+    }
+});
+</script>
