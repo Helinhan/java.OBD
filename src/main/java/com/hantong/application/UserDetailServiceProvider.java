@@ -1,8 +1,6 @@
 package com.hantong.application;
 
 import com.hantong.code.Role;
-import com.hantong.db.User;
-import com.hantong.processor.UserProcessor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,6 +29,7 @@ public class UserDetailServiceProvider  implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        /*
         UserProcessor userProcessor = (UserProcessor) HantongApplication.getApplicationContext().getBean("userProcessor");
         User userGet = userProcessor.findUser(username);
         if (null == userGet) {
@@ -50,5 +49,7 @@ public class UserDetailServiceProvider  implements UserDetailsService {
         SecurityUser user = new SecurityUser(username,userGet.getPassword(),authorities);
 
         return user;
+        */
+        return null;
     }
 }

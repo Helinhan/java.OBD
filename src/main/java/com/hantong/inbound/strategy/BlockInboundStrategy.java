@@ -4,15 +4,15 @@ import com.hantong.code.ErrorCode;
 import com.hantong.inbound.chain.InboundProcessorChain;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
+import com.hantong.model.StrategyConfig;
 import com.hantong.service.Service;
 
 public class BlockInboundStrategy extends InboundStrategy {
 
-    public BlockInboundStrategy(Service s) {
-        super(s);
+    public BlockInboundStrategy(Service s,StrategyConfig config) {
+        super(s,config);
     }
 
-    private InboundProcessorChain inboundProcessorChain;
     @Override
     public ErrorCode onReceiveMessage(RequestMessage requestMessage, RuntimeMessage runtimeMessage) {
         ErrorCode err =  inboundProcessorChain.onReceiveMessage(requestMessage,runtimeMessage);
@@ -20,7 +20,7 @@ public class BlockInboundStrategy extends InboundStrategy {
             return err;
         }
 
-        processOver();
+        processOver(requestMessage,runtimeMessage);
 
         return ErrorCode.Success;
     }

@@ -1,6 +1,6 @@
 package com.hantong.api.v1;
 
-import com.hantong.application.HantongApplication;
+import com.hantong.HantongApplication;
 import com.hantong.code.Role;
 import com.hantong.result.Result;
 import io.swagger.annotations.ApiOperation;
@@ -15,8 +15,8 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value="/api/v1/system")
-@Secured({Role.ADMIN})
-public class ApiSystem {
+//@Secured({Role.ADMIN})
+public class System {
     @ApiOperation(value="获取系统信息", notes="获取系统信息")
     @RequestMapping(value="/info",method= RequestMethod.GET, produces="application/json;charset=UTF-8")
     @ResponseBody

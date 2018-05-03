@@ -14,11 +14,6 @@ import java.util.List;
 @Controller
 public class Entry{
 
-    @Autowired
-    private IndicatorInfoRepository indicatorInfoRepository;
-
-    @Autowired
-    private IndicatorCollectionRepository indicatorCollectionRepository;
 
     @RequestMapping("/interface")
     public String Interface(){
@@ -30,22 +25,6 @@ public class Entry{
         return "login";
     }
 
-    @RequestMapping("/get")
-    @ResponseBody
-    public List<IndicatorInfo> Get(){
-        IndicatorInfo indicatorInfo = new IndicatorInfo();
-        indicatorInfo.setDevice("device1");
-
-        indicatorInfoRepository.save(indicatorInfo);
-
-        IndicatorCollection collection = new IndicatorCollection();
-        collection.setTimestamp(System.currentTimeMillis());
-        collection.setValue("1234");
-        collection.setIndicatorInfo(indicatorInfo);
-        indicatorCollectionRepository.save(collection);
-
-        return indicatorInfoRepository.findByDevice(indicatorInfo.getDevice());
-    }
 
     @RequestMapping(value = "/do/**")
     public String Do(ModelMap model,HttpServletRequest request) throws Exception{

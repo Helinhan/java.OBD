@@ -8,7 +8,10 @@ public enum ErrorCode {
 
     //用户
     UserAlreadyExist (1001,  "user already exist"),
-    UserNotExist     (1002,  "user is not exist");
+    UserNotExist     (1002,  "user is not exist"),
+
+    //服务
+    ServiceNotExist  (2002,  "service is not exist");
 
     ErrorCode(long id, String msg){
         this.code =id;

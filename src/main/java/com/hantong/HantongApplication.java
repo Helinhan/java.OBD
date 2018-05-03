@@ -1,4 +1,4 @@
-package com.hantong.application;
+package com.hantong;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableAsync;
