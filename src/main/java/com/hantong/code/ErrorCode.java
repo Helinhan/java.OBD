@@ -4,6 +4,7 @@ public enum ErrorCode {
     //通用
     Success          (0,     "OK"),
     Failure          (1,     "runtime failure"),
+    ErrParam         (2,     "the param is error"),
     Unauthorized     (401,   "Full authentication is required to access this resource"),
 
     //用户
@@ -11,7 +12,8 @@ public enum ErrorCode {
     UserNotExist     (1002,  "user is not exist"),
 
     //服务
-    ServiceNotExist  (2002,  "service is not exist");
+    ServiceNotExist  (2002,  "service is not exist"),
+    ServiceStartErr  (2003,  "service startup error");
 
     ErrorCode(long id, String msg){
         this.code =id;

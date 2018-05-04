@@ -28,4 +28,12 @@ public class Json {
             return null;
         }
     }
+
+    public<T> T fromString(String s,Class<T> cls) {
+        try {
+            return this.obj.readValue(s, cls);
+        }catch (Exception e) {
+            return null;
+        }
+    }
 }

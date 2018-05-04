@@ -39,7 +39,7 @@ public abstract class InboundStrategy implements IInbound,ILifecycle {
     }
 
     protected void processOver(RequestMessage requestMessage, RuntimeMessage runtimeMessage) {
-        this.service.InboundProcessOver(requestMessage,runtimeMessage);
+        this.service.onInboundProcessOver(requestMessage,runtimeMessage);
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.hantong.message.RuntimeMessage;
 import com.hantong.model.StrategyConfig;
 import com.hantong.outbound.chain.OutboundProcessorChain;
 import com.hantong.outbound.processor.DefaultOutboundProcessor;
+import com.hantong.outbound.processor.SourceReplyOutboundProcessor;
 import com.hantong.service.Service;
 
 public abstract class OutboundStrategy implements IOutbound,ILifecycle {
@@ -39,6 +40,9 @@ public abstract class OutboundStrategy implements IOutbound,ILifecycle {
             if (processor.equals("DefaultProcessor")) {
                 DefaultOutboundProcessor processor1 = new DefaultOutboundProcessor();
                 outboundProcessorChain.addProcessor(processor1);
+            } else if (processor.equals("SourceReplyOutboundProcessor")) {
+                SourceReplyOutboundProcessor processor1 = new SourceReplyOutboundProcessor();
+                outboundProcessorChain.addProcessor(processor1);
             }
         }
         return ErrorCode.Success;
@@ -51,6 +55,6 @@ public abstract class OutboundStrategy implements IOutbound,ILifecycle {
     }
 
     protected void processOver(RequestMessage requestMessage, RuntimeMessage runtimeMessage) {
-        this.service.OutboundProcessOver(requestMessage,runtimeMessage);
+        this.service.onOutboundProcessOver(requestMessage,runtimeMessage);
     }
 }

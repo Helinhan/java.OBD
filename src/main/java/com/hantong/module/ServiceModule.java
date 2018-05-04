@@ -2,6 +2,7 @@ package com.hantong.module;
 
 import com.hantong.application.ApplicationContext;
 import com.hantong.code.ErrorCode;
+import com.hantong.model.CommunicationConfig;
 import com.hantong.model.ServerConfig;
 import com.hantong.model.StrategyConfig;
 import com.hantong.model.StrategyType;
@@ -19,6 +20,17 @@ public class ServiceModule {
         serverConfig.setId("Service_001");
         serverConfig.setName("Service_name_001");
         serverConfig.setStart(Boolean.TRUE);
+
+        serverConfig.setCodec("StandardEncoderDeCoder");
+
+        List<CommunicationConfig> communicationConfigs = new ArrayList<>();
+        CommunicationConfig cf = new CommunicationConfig();
+        cf.setType(CommunicationConfig.CommunicationType.Socket);
+        CommunicationConfig.Socket socketCfg = new CommunicationConfig.Socket();
+        socketCfg.setPort(5555);
+        cf.setSocketCfg(socketCfg);
+        communicationConfigs.add(cf);
+        serverConfig.setCommunicationConfigs(communicationConfigs);
 
         StrategyConfig inboundStrategy = new StrategyConfig();
         inboundStrategy.setType(StrategyType.Strategy_Queue);
@@ -38,6 +50,7 @@ public class ServiceModule {
         outboundStrategy.setCorePoolSize(2);
         List<String> outProcessor = new ArrayList<>();
         outProcessor.add("DefaultProcessor");
+        outProcessor.add("SourceReplyOutboundProcessor");
         outboundStrategy.setProcessor(outProcessor);
         serverConfig.setOutboundStrategy(outboundStrategy);
 

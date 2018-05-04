@@ -11,7 +11,6 @@ import java.util.Map;
 public class ServiceManager {
     private Map<String,Service> serviceMap;
 
-
     public ServiceManager() {
         serviceMap = new HashMap<>();
     }
