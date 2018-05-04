@@ -11,17 +11,18 @@ public class DatabaseManager {
     @Autowired
     MongoPersist mongo;
 
-    public DatabaseManager(){
+    public DatabaseManager(){ }
 
+
+    public DatabasePersist getDbInstance(String dbType) {
+        if (dbType.equals("mongo")) {
+            return mongo;
+        } else {
+            return null;
+        }
     }
 
-    private String type = "mongo";
-
-    public DatabasePersist getDb() {
-        if (type.equals("mongo")) {
-            return mongo;
-        }
-
-        return null;
+    public DatabasePersist getDbInstance() {
+        return this.getDbInstance("mongo");
     }
 }

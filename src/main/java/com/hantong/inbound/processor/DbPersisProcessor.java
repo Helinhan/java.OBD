@@ -24,7 +24,7 @@ public class DbPersisProcessor extends InboundProcessor {
     @Override
     public ErrorCode receiveMessage(RequestMessage requestMessage, RuntimeMessage runtimeMessage) {
         Long begin = System.currentTimeMillis();
-        ErrorCode result = databaseManager.getDb().getEvent().addRequestMessage(requestMessage, runtimeMessage);
+        ErrorCode result = databaseManager.getDbInstance().addRequestMessage(requestMessage, runtimeMessage);
         Long end = System.currentTimeMillis();
         runtimeMessage.addTimestramp(this.getClass().getSimpleName(),begin,end);
         return result;
