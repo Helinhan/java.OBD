@@ -99,4 +99,15 @@ public class ServiceModule {
 
         return Json.getInstance().toString(result);
     }
+
+    public Result monitorService(String serviceId) {
+        Service service = ApplicationContext.getServiceManager().getService(serviceId);
+        if (null == service) {
+            return new Result(ErrorCode.ServiceNotExist);
+        }
+
+        Result result = new Result();
+        result.put("monitor",service.getMonitorData());
+        return result;
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.hantong.code.ErrorCode;
 import com.hantong.exception.ErrorCodeException;
 import com.hantong.interfaces.ILifecycle;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.interfaces.IOutbound;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
@@ -22,10 +23,11 @@ import java.util.List;
 import static com.hantong.model.StrategyName.Strategy_Default;
 import static com.hantong.model.StrategyName.Strategy_Queue;
 
-public abstract class OutboundStrategy implements IOutbound,ILifecycle {
+public abstract class OutboundStrategy implements IOutbound,ILifecycle,IMonitor {
     protected Service service;
     protected StrategyConfig config;
     protected String name = this.getClass().getName();
+    protected OutboundProcessorChain outboundProcessorChain;
 
     public String getName() {
         return name;
@@ -35,7 +37,7 @@ public abstract class OutboundStrategy implements IOutbound,ILifecycle {
         return outboundProcessorChain;
     }
 
-    protected OutboundProcessorChain outboundProcessorChain;
+
 
     public OutboundStrategy(Service s,StrategyConfig config) {
         this.service = s;

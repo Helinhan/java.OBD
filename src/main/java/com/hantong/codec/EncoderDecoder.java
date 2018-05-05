@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.hantong.code.ErrorCode;
 import com.hantong.exception.ErrorCodeException;
 import com.hantong.interfaces.ICodec;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
 import com.hantong.service.Service;
@@ -12,7 +13,7 @@ import com.hantong.util.Json;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class EncoderDecoder implements ICodec {
+public abstract class EncoderDecoder implements ICodec,IMonitor {
     public static final String Codec_StandardEncoderDeCoder = "StandardEncoderDeCoder";
     public static List<ServiceConfigField> getConfigField() {
         String config = "[" +

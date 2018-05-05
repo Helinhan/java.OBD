@@ -7,6 +7,7 @@ import com.hantong.exception.ErrorCodeException;
 import com.hantong.interfaces.ICodec;
 import com.hantong.interfaces.ICommunication;
 import com.hantong.interfaces.ILifecycle;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.model.CommunicationConfig;
 import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
@@ -15,10 +16,11 @@ import com.hantong.util.Json;
 
 import java.util.List;
 
-public abstract class Communicate implements ICommunication,ILifecycle {
+public abstract class Communicate implements ICommunication,ILifecycle,IMonitor {
 
     public static final String Communicate_Socket = CommunicationConfig.CommunicationName.Socket.toString();
     protected ICodec encoderDecoder;
+    protected Long initDate = System.currentTimeMillis();
 
     public Communicate(ICodec code) {
         this.encoderDecoder = code;

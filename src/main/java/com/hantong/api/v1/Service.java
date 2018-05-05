@@ -67,4 +67,11 @@ public class Service {
     public String getServiceCfgField () {
         return serviceModule.getServiceCfgField();
     }
+
+    @ApiOperation(value="查询服务统计", notes="查询服务统计")
+    @RequestMapping(value="/service/monitor/{serviceId}",method= RequestMethod.GET, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public Result monitorService(@PathVariable(value = "serviceId") String serverId) {
+        return serviceModule.monitorService(serverId);
+    }
 }

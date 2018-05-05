@@ -8,6 +8,9 @@ import com.hantong.service.Service;
 import org.apache.log4j.Logger;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -108,5 +111,16 @@ public class QueueOutboundStrategy extends OutboundStrategy {
                 } catch (Exception e) { }
             }
         }
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        thisMonitor.put("remainingCapacity",String.valueOf(queue.remainingCapacity()));
+        monitor.put("QueueOutboundStrategy",thisMonitor);
+        monitor.putAll(outboundProcessorChain.getMonitorData());
+
+        return monitor;
     }
 }

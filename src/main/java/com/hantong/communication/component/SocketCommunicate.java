@@ -21,6 +21,7 @@ import io.netty.util.ReferenceCountUtil;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class SocketCommunicate extends Communicate {
@@ -31,6 +32,11 @@ public class SocketCommunicate extends Communicate {
     private SocketCommunicate that;
     private Map<String,ChannelHandlerContext> handlerContextMap;
     private Map<ChannelHandlerContext,String> handlerContextStringMap;
+    private Long count = Long.valueOf(0);
+
+    public void addCounter(){
+        this.count++;
+    }
 
     public Boolean isHardwareExist(String hardwareId) {
         return handlerContextMap.containsKey(hardwareId);
@@ -45,6 +51,10 @@ public class SocketCommunicate extends Communicate {
         this.handlerContextStringMap.put(ctx,hardwareId);
     }
 
+    public void clear() {
+        this.handlerContextStringMap.clear();
+        this.handlerContextMap.clear();
+    }
     public void delHardwareContext(String hardwareId) {
         if (!isHardwareExist(hardwareId)) {
             return;
@@ -77,7 +87,16 @@ public class SocketCommunicate extends Communicate {
             return ErrorCode.Success;
         }
         byte[] result = this.encoderDecoder.encode(requestMessage,runtimeMessage);
-        ChannelHandlerContext ctx = (ChannelHandlerContext)runtimeMessage.getContext();
+        ChannelHandlerContext ctx ;
+        if (null != runtimeMessage.getContext()) {
+            ctx = (ChannelHandlerContext)runtimeMessage.getContext();
+        } else {
+            ctx = this.handlerContextMap.getOrDefault(requestMessage.getHardwareId(),null);
+        }
+
+        if (null == ctx) {
+            return ErrorCode.Success;
+        }
 
         ByteBuf buf = Unpooled.buffer();
         buf.writeBytes(result);
@@ -111,6 +130,7 @@ public class SocketCommunicate extends Communicate {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg)  throws Exception {
             try {
+                this.socketCommunicate.addCounter();
                 Long begin = System.currentTimeMillis();
                 ByteBuf buf = (ByteBuf)msg;
                 byte[] content = new byte[buf.readableBytes()];
@@ -191,13 +211,23 @@ public class SocketCommunicate extends Communicate {
                 ChannelFuture cf = serverBootstrap.bind(config.getPort()).sync();
 
                 cf.channel().closeFuture().sync();
-                pGroup.shutdownGracefully();
-                cGroup.shutdownGracefully();
             } catch (Exception e) {
                 System.out.println("Socket服务关闭监听,端口：" + String.valueOf(config.getPort()));
+            } finally {
                 pGroup.shutdownGracefully();
                 cGroup.shutdownGracefully();
+                that.clear();
             }
         }
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        thisMonitor.put("received",String.valueOf(count));
+        monitor.put("SocketCommunicate",thisMonitor);
+
+        return monitor;
     }
 }

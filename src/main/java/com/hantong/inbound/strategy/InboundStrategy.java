@@ -10,6 +10,7 @@ import com.hantong.inbound.processor.DefaultInboundProcessor;
 import com.hantong.inbound.processor.InboundProcessor;
 import com.hantong.interfaces.IInbound;
 import com.hantong.interfaces.ILifecycle;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
 import com.hantong.model.ServerConfig;
@@ -25,7 +26,7 @@ import static com.hantong.model.StrategyName.Strategy_Block;
 import static com.hantong.model.StrategyName.Strategy_Default;
 import static com.hantong.model.StrategyName.Strategy_Queue;
 
-public abstract class InboundStrategy implements IInbound,ILifecycle {
+public abstract class InboundStrategy implements IInbound,ILifecycle,IMonitor {
     protected Service service;
     protected StrategyConfig config;
     protected InboundProcessorChain inboundProcessorChain;

@@ -11,6 +11,7 @@ import com.hantong.inbound.strategy.DefaultInboundStrategy;
 import com.hantong.inbound.strategy.InboundStrategy;
 import com.hantong.inbound.strategy.QueueInboundStrategy;
 import com.hantong.interfaces.ILifecycle;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
 import com.hantong.model.CommunicationConfig;
@@ -21,21 +22,20 @@ import com.hantong.outbound.strategy.OutboundStrategy;
 import com.hantong.outbound.strategy.QueueOutboundStrategy;
 import com.hantong.util.Echo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.hantong.model.StrategyName.Strategy_Block;
 import static com.hantong.model.StrategyName.Strategy_Default;
 import static com.hantong.model.StrategyName.Strategy_Queue;
 
-public class Service implements ILifecycle {
+public class Service implements ILifecycle,IMonitor {
     private ServerConfig config;
     private Boolean start = Boolean.FALSE;
     protected InboundStrategy inboundStrategy;
     protected OutboundStrategy outboundStrategy;
     protected List<Communicate>  communications;
     protected EncoderDecoder encoderDecoder;
+    private Long count = Long.valueOf(0);
 
     public List<Communicate> getCommunications() {
         return communications;
@@ -141,6 +141,8 @@ public class Service implements ILifecycle {
     }
 
     public ErrorCode onReceiveMessage(RequestMessage requestMessage, RuntimeMessage runtimeMessage) {
+        runtimeMessage.setService(this);
+        count++;
         if (this.inboundStrategy != null) {
             return  this.inboundStrategy.onReceiveMessage(requestMessage,runtimeMessage);
         }
@@ -163,5 +165,21 @@ public class Service implements ILifecycle {
         }
 
         return ErrorCode.Success;
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        thisMonitor.put("received",String.valueOf(count));
+        monitor.put("Service",thisMonitor);
+        for (Communicate communicate : communications) {
+            monitor.putAll(communicate.getMonitorData());
+        }
+        monitor.putAll(this.encoderDecoder.getMonitorData());
+        monitor.putAll(this.outboundStrategy.getMonitorData());
+        monitor.putAll(this.inboundStrategy.getMonitorData());
+
+        return monitor;
     }
 }

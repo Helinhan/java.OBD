@@ -3,6 +3,7 @@ package com.hantong.outbound.processor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hantong.code.ErrorCode;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.interfaces.IOutboundProcesser;
 import com.hantong.model.ServiceConfigField;
 import com.hantong.model.StrategyConfig;
@@ -11,7 +12,7 @@ import com.hantong.util.Json;
 
 import java.util.List;
 
-public abstract class OutboundProcessor implements IOutboundProcesser{
+public abstract class OutboundProcessor implements IOutboundProcesser,IMonitor {
     public String getName() {
         return name;
     }

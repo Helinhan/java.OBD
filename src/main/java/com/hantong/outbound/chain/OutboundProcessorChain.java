@@ -2,15 +2,15 @@ package com.hantong.outbound.chain;
 
 import com.hantong.code.ErrorCode;
 import com.hantong.inbound.processor.InboundProcessor;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.interfaces.IOutbound;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
 import com.hantong.outbound.processor.OutboundProcessor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class OutboundProcessorChain implements IOutbound {
+public class OutboundProcessorChain implements IOutbound,IMonitor {
     public List<OutboundProcessor> getProcessors() {
         return processors;
     }
@@ -51,4 +51,15 @@ public class OutboundProcessorChain implements IOutbound {
         return;
     }
 
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        thisMonitor.put("size",String.valueOf(processors.size()));
+        monitor.put("OutboundProcessorChain",thisMonitor);
+        for (OutboundProcessor pro : processors) {
+            monitor.putAll(pro.getMonitorData());
+        }
+        return monitor;
+    }
 }

@@ -3,13 +3,14 @@ package com.hantong.inbound.chain;
 import com.hantong.code.ErrorCode;
 import com.hantong.inbound.processor.InboundProcessor;
 import com.hantong.interfaces.IInbound;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
+import com.hantong.outbound.processor.OutboundProcessor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-public class InboundProcessorChain implements IInbound{
+public class InboundProcessorChain implements IInbound,IMonitor {
 
     public List<InboundProcessor> getProcessors() {
         return processors;
@@ -49,5 +50,17 @@ public class InboundProcessorChain implements IInbound{
         }
 
         return resultCode;
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        thisMonitor.put("size",String.valueOf(processors.size()));
+        monitor.put("InboundProcessorChain",thisMonitor);
+        for (InboundProcessor pro : processors) {
+            monitor.putAll(pro.getMonitorData());
+        }
+        return monitor;
     }
 }

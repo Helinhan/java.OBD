@@ -8,8 +8,7 @@ import com.hantong.model.StrategyConfig;
 import com.hantong.service.Service;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
@@ -118,5 +117,16 @@ public class QueueInboundStrategy extends InboundStrategy {
                 }
             }
         }
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        thisMonitor.put("remainingCapacity",String.valueOf(queue.remainingCapacity()));
+        monitor.put("QueueInboundStrategy",thisMonitor);
+        monitor.putAll(inboundProcessorChain.getMonitorData());
+
+        return monitor;
     }
 }

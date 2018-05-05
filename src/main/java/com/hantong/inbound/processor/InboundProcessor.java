@@ -5,13 +5,14 @@ import com.hantong.HantongApplication;
 import com.hantong.code.ErrorCode;
 import com.hantong.inbound.chain.InboundProcessorChain;
 import com.hantong.interfaces.IInboundProcesser;
+import com.hantong.interfaces.IMonitor;
 import com.hantong.model.ServiceConfigField;
 import com.hantong.model.StrategyConfig;
 import com.hantong.util.Json;
 
 import java.util.List;
 
-public abstract class InboundProcessor implements IInboundProcesser {
+public abstract class InboundProcessor implements IInboundProcesser,IMonitor {
     public String getName() {
         return name;
     }

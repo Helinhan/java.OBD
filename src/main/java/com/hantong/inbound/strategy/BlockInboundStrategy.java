@@ -7,6 +7,10 @@ import com.hantong.message.RuntimeMessage;
 import com.hantong.model.StrategyConfig;
 import com.hantong.service.Service;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class BlockInboundStrategy extends InboundStrategy {
 
     public BlockInboundStrategy(Service s,StrategyConfig config) {
@@ -23,5 +27,15 @@ public class BlockInboundStrategy extends InboundStrategy {
         processOver(requestMessage,runtimeMessage);
 
         return ErrorCode.Success;
+    }
+
+    @Override
+    public Map<String, Map<String, String>> getMonitorData() {
+        Map<String, Map<String, String>> monitor = new LinkedHashMap<>();
+        Map<String, String> thisMonitor = new LinkedHashMap<>();
+        monitor.put("BlockInboundStrategy",thisMonitor);
+        monitor.putAll(inboundProcessorChain.getMonitorData());
+
+        return monitor;
     }
 }
