@@ -1,7 +1,7 @@
 package com.hantong.model;
 
 public class CommunicationConfig {
-    public static enum  CommunicationType {
+    public static enum CommunicationName {
         Socket,Mqtt,Coap;
     }
 
@@ -35,12 +35,12 @@ public class CommunicationConfig {
         private String  type = "TCP";
     }
 
-    public CommunicationType getType() {
-        return type;
+    public CommunicationName getName() {
+        return name;
     }
 
-    public void setType(CommunicationType type) {
-        this.type = type;
+    public void setName(CommunicationName name) {
+        this.name = name;
     }
 
     public Socket getSocketCfg() {
@@ -51,6 +51,6 @@ public class CommunicationConfig {
         this.socketCfg = socketCfg;
     }
 
-    private CommunicationType type;
+    private CommunicationName name;
     private Socket socketCfg;
 }

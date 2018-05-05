@@ -89,6 +89,14 @@
 			<version>4.1.24.Final</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+		<dependency>
+			<groupId>org.fusesource.jansi</groupId>
+			<artifactId>jansi</artifactId>
+			<version>1.17.1</version>
+		</dependency>
+
+
 		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

@@ -26,7 +26,7 @@ public class Result extends HashMap<Object,Object> {
             this.put("error", errorCode.toString());
         }
         this.put("message",errorCode.getMessage());
-        this.put("status",errorCode.getCode());
+        this.put("code",errorCode.getCode());
     }
 
     public static Result from(Map info){

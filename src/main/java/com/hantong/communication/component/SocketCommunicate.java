@@ -1,10 +1,9 @@
 package com.hantong.communication.component;
 
-import codec.EncoderDecoder;
+import com.hantong.codec.EncoderDecoder;
 import com.hantong.code.ErrorCode;
 import com.hantong.communication.Communicate;
 import com.hantong.interfaces.ICodec;
-import com.hantong.interfaces.ILifecycle;
 import com.hantong.message.MessageType;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
@@ -13,24 +12,13 @@ import com.hantong.service.Service;
 import com.hantong.util.Json;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.ByteProcessor;
 import io.netty.util.ReferenceCountUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.FileChannel;
-import java.nio.channels.GatheringByteChannel;
-import java.nio.channels.ScatteringByteChannel;
-import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -194,7 +182,6 @@ public class SocketCommunicate extends Communicate {
                 cGroup = new NioEventLoopGroup();
                 serverBootstrap.group(pGroup, cGroup)
                         .channel(NioServerSocketChannel.class)
-                        .option(ChannelOption.SO_KEEPALIVE, true)
                         .childHandler(new ChannelInitializer<SocketChannel>() {
                             @Override
                             protected void initChannel(SocketChannel sc) throws Exception {

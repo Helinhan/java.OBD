@@ -1,20 +1,17 @@
 package com.hantong.api.v1;
 
-import com.hantong.HantongApplication;
-import com.hantong.application.ApplicationContext;
+import com.hantong.code.Role;
 import com.hantong.model.ServerConfig;
-import com.hantong.model.StrategyConfig;
-import com.hantong.model.StrategyType;
-import com.hantong.module.ServiceModule;
+import com.hantong.service.ServiceModule;
 import com.hantong.result.Result;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
+@Secured({Role.ADMIN})
 @RestController
 @RequestMapping(value="/api/v1/")
 public class Service {
@@ -62,5 +59,12 @@ public class Service {
     @ResponseBody
     public Result getAllService() {
         return serviceModule.getAllService();
+    }
+
+    @ApiOperation(value="查询配置服务用到的字段", notes="查询配置服务用到的字段")
+    @RequestMapping(value="/service/config/field",method= RequestMethod.GET, produces="application/json;charset=UTF-8")
+    @ResponseBody
+    public String getServiceCfgField () {
+        return serviceModule.getServiceCfgField();
     }
 }

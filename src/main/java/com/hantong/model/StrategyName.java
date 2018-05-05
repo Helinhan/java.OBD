@@ -1,6 +1,6 @@
 package com.hantong.model;
 
-public enum StrategyType {
+public enum StrategyName {
     Strategy_Default,
     Strategy_Block,
     Strategy_Queue

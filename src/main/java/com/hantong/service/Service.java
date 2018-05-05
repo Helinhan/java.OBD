@@ -1,7 +1,7 @@
 package com.hantong.service;
 
-import codec.EncoderDecoder;
-import codec.StandardEncoderDeCoder;
+import com.hantong.codec.EncoderDecoder;
+import com.hantong.codec.StandardEncoderDeCoder;
 import com.hantong.code.ErrorCode;
 import com.hantong.communication.Communicate;
 import com.hantong.communication.component.SocketCommunicate;
@@ -11,7 +11,6 @@ import com.hantong.inbound.strategy.DefaultInboundStrategy;
 import com.hantong.inbound.strategy.InboundStrategy;
 import com.hantong.inbound.strategy.QueueInboundStrategy;
 import com.hantong.interfaces.ILifecycle;
-import com.hantong.interfaces.ICommunication;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
 import com.hantong.model.CommunicationConfig;
@@ -20,14 +19,15 @@ import com.hantong.model.ServerConfig;
 import com.hantong.outbound.strategy.DefaultOutboundStrategy;
 import com.hantong.outbound.strategy.OutboundStrategy;
 import com.hantong.outbound.strategy.QueueOutboundStrategy;
+import com.hantong.util.Echo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.hantong.model.StrategyType.Strategy_Block;
-import static com.hantong.model.StrategyType.Strategy_Default;
-import static com.hantong.model.StrategyType.Strategy_Queue;
+import static com.hantong.model.StrategyName.Strategy_Block;
+import static com.hantong.model.StrategyName.Strategy_Default;
+import static com.hantong.model.StrategyName.Strategy_Queue;
 
 public class Service implements ILifecycle {
     private ServerConfig config;
@@ -55,14 +55,14 @@ public class Service implements ILifecycle {
     }
 
     private ErrorCode configInboundStrategy() throws ErrorCodeException{
-        if (config.getInboundStrategy().getType() == Strategy_Default)
+        if (config.getInboundStrategy().getName() == Strategy_Default)
         {
             this.inboundStrategy = new DefaultInboundStrategy(this,config.getInboundStrategy());
         }
-        else if (config.getInboundStrategy().getType() == Strategy_Block) {
+        else if (config.getInboundStrategy().getName() == Strategy_Block) {
             this.inboundStrategy = new BlockInboundStrategy(this,config.getInboundStrategy());
         }
-        else if (config.getInboundStrategy().getType() == Strategy_Queue) {
+        else if (config.getInboundStrategy().getName() == Strategy_Queue) {
             this.inboundStrategy = new QueueInboundStrategy(this,config.getInboundStrategy());
         }
         else {
@@ -77,9 +77,9 @@ public class Service implements ILifecycle {
     }
 
     private ErrorCode configOutboundStrategy() throws ErrorCodeException{
-        if (config.getOutboundStrategy().getType() == Strategy_Default) {
+        if (config.getOutboundStrategy().getName() == Strategy_Default) {
             this.outboundStrategy = new DefaultOutboundStrategy(this,config.getOutboundStrategy());
-        } else if (config.getOutboundStrategy().getType() == Strategy_Queue) {
+        } else if (config.getOutboundStrategy().getName() == Strategy_Queue) {
             this.outboundStrategy = new QueueOutboundStrategy(this,config.getOutboundStrategy());
         } else {
             throw new ErrorCodeException(ErrorCode.ServiceStartErr);
@@ -95,7 +95,7 @@ public class Service implements ILifecycle {
     private ErrorCode configCommunication() throws ErrorCodeException{
         for (CommunicationConfig conf:config.getCommunicationConfigs())
         {
-            if (conf.getType() == CommunicationConfig.CommunicationType.Socket) {
+            if (conf.getName() == CommunicationConfig.CommunicationName.Socket) {
                 Communicate communication = new SocketCommunicate(conf.getSocketCfg(),this.encoderDecoder,this);
                 if (ErrorCode.Success != communication.lifeStart()){
                     throw new ErrorCodeException(ErrorCode.ServiceStartErr);
@@ -110,7 +110,7 @@ public class Service implements ILifecycle {
     }
 
     private ErrorCode configEncoderDecoder() throws ErrorCodeException{
-        if (this.config.getCodec().equals("StandardEncoderDeCoder")) {
+        if (this.config.getCodec().equals(EncoderDecoder.Codec_StandardEncoderDeCoder)) {
             this.encoderDecoder = new StandardEncoderDeCoder();
             return ErrorCode.Success;
         }
@@ -183,11 +183,12 @@ public class Service implements ILifecycle {
     }
     public ErrorCode onOutboundProcessOver(RequestMessage requestMessage, RuntimeMessage runtimeMessage) {
 
+        Echo.green("运行统计\n-----------------------------------");
         for(Map.Entry<String,Pair<Long,Long>> entry :runtimeMessage.getTimestramp().entrySet()) {
             Pair<Long,Long> value = entry.getValue();
-            System.out.println(String.format("run time:%s %d %d %d",entry.getKey(),value.getKey(),value.getValue(),value.getValue()-value.getKey()));
+            Echo.green(String.format("run time:%s %d %d %d",entry.getKey(),value.getKey(),value.getValue(),value.getValue()-value.getKey()));
         }
 
-
-        return ErrorCode.Success;}
+        return ErrorCode.Success;
+    }
 }

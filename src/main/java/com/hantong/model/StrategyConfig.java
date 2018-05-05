@@ -4,7 +4,7 @@ package com.hantong.model;
 import java.util.List;
 
 public class StrategyConfig {
-    private StrategyType type;
+    private StrategyName name;
     private Integer queueSize;
     private Integer maxPoolSize;
     private Integer corePoolSize;
@@ -18,12 +18,12 @@ public class StrategyConfig {
         this.processor = processor;
     }
 
-    public StrategyType getType() {
-        return type;
+    public StrategyName getName() {
+        return name;
     }
 
-    public void setType(StrategyType type) {
-        this.type = type;
+    public void setName(StrategyName name) {
+        this.name = name;
     }
 
     public Integer getQueueSize() {

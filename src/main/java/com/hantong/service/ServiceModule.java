@@ -1,12 +1,19 @@
-package com.hantong.module;
+package com.hantong.service;
 
 import com.hantong.application.ApplicationContext;
 import com.hantong.code.ErrorCode;
+import com.hantong.codec.EncoderDecoder;
+import com.hantong.communication.Communicate;
+import com.hantong.inbound.processor.InboundProcessor;
+import com.hantong.inbound.strategy.InboundStrategy;
 import com.hantong.model.CommunicationConfig;
 import com.hantong.model.ServerConfig;
 import com.hantong.model.StrategyConfig;
-import com.hantong.model.StrategyType;
+import com.hantong.model.StrategyName;
+import com.hantong.outbound.processor.OutboundProcessor;
+import com.hantong.outbound.strategy.OutboundStrategy;
 import com.hantong.result.Result;
+import com.hantong.util.Json;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -21,11 +28,11 @@ public class ServiceModule {
         serverConfig.setName("Service_name_001");
         serverConfig.setStart(Boolean.TRUE);
 
-        serverConfig.setCodec("StandardEncoderDeCoder");
+        serverConfig.setCodec(EncoderDecoder.Codec_StandardEncoderDeCoder);
 
         List<CommunicationConfig> communicationConfigs = new ArrayList<>();
         CommunicationConfig cf = new CommunicationConfig();
-        cf.setType(CommunicationConfig.CommunicationType.Socket);
+        cf.setName(CommunicationConfig.CommunicationName.Socket);
         CommunicationConfig.Socket socketCfg = new CommunicationConfig.Socket();
         socketCfg.setPort(5555);
         cf.setSocketCfg(socketCfg);
@@ -33,24 +40,24 @@ public class ServiceModule {
         serverConfig.setCommunicationConfigs(communicationConfigs);
 
         StrategyConfig inboundStrategy = new StrategyConfig();
-        inboundStrategy.setType(StrategyType.Strategy_Queue);
+        inboundStrategy.setName(StrategyName.Strategy_Queue);
         inboundStrategy.setQueueSize(10);
         inboundStrategy.setMaxPoolSize(10);
         inboundStrategy.setCorePoolSize(2);
         List<String> inProcessor = new ArrayList<>();
-        inProcessor.add("DbPersisProcessor");
-        inProcessor.add("DefaultProcessor");
+        inProcessor.add(InboundProcessor.InboundProcessor_DbPersis);
+        inProcessor.add(InboundProcessor.InboundProcessor_Default);
         inboundStrategy.setProcessor(inProcessor);
         serverConfig.setInboundStrategy(inboundStrategy);
 
         StrategyConfig outboundStrategy = new StrategyConfig();
-        outboundStrategy.setType(StrategyType.Strategy_Queue);
+        outboundStrategy.setName(StrategyName.Strategy_Queue);
         outboundStrategy.setQueueSize(10);
         outboundStrategy.setMaxPoolSize(10);
         outboundStrategy.setCorePoolSize(2);
         List<String> outProcessor = new ArrayList<>();
-        outProcessor.add("DefaultProcessor");
-        outProcessor.add("SourceReplyOutboundProcessor");
+        outProcessor.add(OutboundProcessor.OutboundProcessor_Default);
+        outProcessor.add(OutboundProcessor.OutboundProcessor_SourceReply);
         outboundStrategy.setProcessor(outProcessor);
         serverConfig.setOutboundStrategy(outboundStrategy);
 
@@ -78,5 +85,18 @@ public class ServiceModule {
 
     public Result delService(String serviceId) {
         return new Result(ApplicationContext.getServiceManager().delService(serviceId));
+    }
+
+    public String getServiceCfgField() {
+        Result result = new Result();
+        result.put("service",ServiceManager.getConfigField());
+        result.put("codec",EncoderDecoder.getConfigField());
+        result.put("communicate",Communicate.getConfigField());
+        result.put("inboundStrategy", InboundStrategy.getConfigField());
+        result.put("outboundStrategy", OutboundStrategy.getConfigField());
+        result.put("inboundProcessor", InboundProcessor.getConfigField());
+        result.put("outboundProcessor", OutboundProcessor.getConfigField());
+
+        return Json.getInstance().toString(result);
     }
 }

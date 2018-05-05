@@ -13,6 +13,10 @@ public class Json {
         this.obj.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
     }
 
+    public ObjectMapper getObjectMapper(){
+        return this.obj;
+    }
+
     public static Json getInstance() {
         if (Json.instance == null) {
             Json.instance = new Json();

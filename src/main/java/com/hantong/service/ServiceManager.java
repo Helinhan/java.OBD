@@ -1,10 +1,14 @@
 package com.hantong.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.hantong.code.ErrorCode;
 import com.hantong.model.ServerConfig;
+import com.hantong.model.ServiceConfigField;
+import com.hantong.util.Json;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -58,5 +62,25 @@ public class ServiceManager {
             return service.lifeStop();
         }
         return ErrorCode.ServiceNotExist;
+    }
+
+
+    public static List<ServiceConfigField> getConfigField() {
+        String config = "[" +
+                "{" +
+                "\"param\":[" +
+                "{\"name\":\"name\",\"title\":\"服务名\",\"description\":\"服务的名称\",\"range\":\"按需配置\"}," +
+                "{\"name\":\"id\",\"title\":\"服务ID\",\"description\":\"一个服务的唯一标识\",\"range\":\"按指定方式生成\"}," +
+                "{\"name\":\"start\",\"title\":\"是否启动\",\"description\":\"配置完是否直接启动\",\"range\":\"true,false\"}]" +
+                "}" +
+                "]";
+
+        try {
+            return Json.getInstance().getObjectMapper().readValue(config, new TypeReference<List<ServiceConfigField>>() {
+            });
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

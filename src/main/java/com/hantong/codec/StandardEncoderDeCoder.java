@@ -1,6 +1,5 @@
-package codec;
+package com.hantong.codec;
 
-import com.hantong.code.ErrorCode;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
 import com.hantong.result.Result;
