@@ -60,7 +60,23 @@ public class ServiceModule {
         return new Result(result);
     }
 
+    public Result addService(ServerConfig serverParam) {
+        return new Result(ApplicationContext.getServiceManager().addService(serverParam));
+    }
+
     public Result getAllService() {
         return Result.from("services",ApplicationContext.getServiceManager().getAllService());
+    }
+
+    public Result startService(String serviceId) {
+        return new Result(ApplicationContext.getServiceManager().startService(serviceId));
+    }
+
+    public Result stopService(String serviceId) {
+        return new Result(ApplicationContext.getServiceManager().stopService(serviceId));
+    }
+
+    public Result delService(String serviceId) {
+        return new Result(ApplicationContext.getServiceManager().delService(serviceId));
     }
 }

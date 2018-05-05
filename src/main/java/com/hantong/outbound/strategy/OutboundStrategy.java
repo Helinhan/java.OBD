@@ -35,7 +35,7 @@ public abstract class OutboundStrategy implements IOutbound,ILifecycle {
     }
 
     @Override
-    public ErrorCode lifeStart() {
+    public ErrorCode lifeStart(){
         for (String processor : config.getProcessor()) {
             if (processor.equals("DefaultProcessor")) {
                 DefaultOutboundProcessor processor1 = new DefaultOutboundProcessor();

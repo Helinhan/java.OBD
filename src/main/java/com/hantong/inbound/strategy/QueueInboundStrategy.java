@@ -33,10 +33,10 @@ public class QueueInboundStrategy extends InboundStrategy {
     public ErrorCode lifeStop() {
         super.lifeStop();
 
-        threadQueueWait.interrupt();
+        if (threadQueueWait != null) threadQueueWait.interrupt();
         threadQueueWait = null;
 
-        taskExecutor.destroy();
+        if (taskExecutor != null ) taskExecutor.destroy();
         taskExecutor = null;
 
         return ErrorCode.Success;

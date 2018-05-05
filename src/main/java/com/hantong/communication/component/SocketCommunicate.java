@@ -183,12 +183,15 @@ public class SocketCommunicate extends Communicate {
     }
 
     public class SocketWaitConnect implements Runnable {
+        private ServerBootstrap serverBootstrap;
+        private EventLoopGroup pGroup;
+        private EventLoopGroup cGroup;
         @Override
         public void run() {
             try {
-                ServerBootstrap serverBootstrap = new ServerBootstrap();
-                EventLoopGroup pGroup = new NioEventLoopGroup();
-                EventLoopGroup cGroup = new NioEventLoopGroup();
+                serverBootstrap = new ServerBootstrap();
+                pGroup = new NioEventLoopGroup();
+                cGroup = new NioEventLoopGroup();
                 serverBootstrap.group(pGroup, cGroup)
                         .channel(NioServerSocketChannel.class)
                         .option(ChannelOption.SO_KEEPALIVE, true)
@@ -199,11 +202,14 @@ public class SocketCommunicate extends Communicate {
                             }
                         });
                 ChannelFuture cf = serverBootstrap.bind(config.getPort()).sync();
+
                 cf.channel().closeFuture().sync();
                 pGroup.shutdownGracefully();
                 cGroup.shutdownGracefully();
             } catch (Exception e) {
-                System.out.println("socketError");
+                System.out.println("Socket服务关闭监听,端口：" + String.valueOf(config.getPort()));
+                pGroup.shutdownGracefully();
+                cGroup.shutdownGracefully();
             }
         }
     }

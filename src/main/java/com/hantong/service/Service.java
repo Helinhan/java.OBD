@@ -5,6 +5,7 @@ import codec.StandardEncoderDeCoder;
 import com.hantong.code.ErrorCode;
 import com.hantong.communication.Communicate;
 import com.hantong.communication.component.SocketCommunicate;
+import com.hantong.exception.ErrorCodeException;
 import com.hantong.inbound.strategy.BlockInboundStrategy;
 import com.hantong.inbound.strategy.DefaultInboundStrategy;
 import com.hantong.inbound.strategy.InboundStrategy;
@@ -53,7 +54,7 @@ public class Service implements ILifecycle {
         return outboundStrategy;
     }
 
-    private ErrorCode configInboundStrategy() {
+    private ErrorCode configInboundStrategy() throws ErrorCodeException{
         if (config.getInboundStrategy().getType() == Strategy_Default)
         {
             this.inboundStrategy = new DefaultInboundStrategy(this,config.getInboundStrategy());
@@ -65,59 +66,76 @@ public class Service implements ILifecycle {
             this.inboundStrategy = new QueueInboundStrategy(this,config.getInboundStrategy());
         }
         else {
-            return ErrorCode.Failure;
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
         }
 
-        return this.inboundStrategy.lifeStart();
+        if (ErrorCode.Success != this.inboundStrategy.lifeStart()){
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+        }
+
+        return ErrorCode.Success;
     }
 
-    private ErrorCode configOutboundStrategy() {
+    private ErrorCode configOutboundStrategy() throws ErrorCodeException{
         if (config.getOutboundStrategy().getType() == Strategy_Default) {
             this.outboundStrategy = new DefaultOutboundStrategy(this,config.getOutboundStrategy());
         } else if (config.getOutboundStrategy().getType() == Strategy_Queue) {
             this.outboundStrategy = new QueueOutboundStrategy(this,config.getOutboundStrategy());
         } else {
-            return ErrorCode.Failure;
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
         }
 
-        return this.outboundStrategy.lifeStart();
+        if (ErrorCode.Success != this.outboundStrategy.lifeStart()) {
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+        }
+
+        return ErrorCode.Success;
     }
 
-    private ErrorCode configCommunication() {
+    private ErrorCode configCommunication() throws ErrorCodeException{
         for (CommunicationConfig conf:config.getCommunicationConfigs())
         {
             if (conf.getType() == CommunicationConfig.CommunicationType.Socket) {
                 Communicate communication = new SocketCommunicate(conf.getSocketCfg(),this.encoderDecoder,this);
-                communication.lifeStart();
+                if (ErrorCode.Success != communication.lifeStart()){
+                    throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+                }
                 this.communications.add(communication);
+            } else {
+                throw new ErrorCodeException(ErrorCode.ServiceStartErr);
             }
         }
 
         return ErrorCode.Success;
     }
 
-    private ErrorCode configEncoderDecoder(){
+    private ErrorCode configEncoderDecoder() throws ErrorCodeException{
         if (this.config.getCodec().equals("StandardEncoderDeCoder")) {
             this.encoderDecoder = new StandardEncoderDeCoder();
+            return ErrorCode.Success;
         }
 
-        return ErrorCode.Success;
+        throw new ErrorCodeException(ErrorCode.ServiceStartErr);
     }
 
     @Override
     public ErrorCode lifeStart() {
-        if (start == config.getStart()) {
+        if (start) {
             return ErrorCode.Success;
         }
         try {
-            this.start = config.getStart();
             configEncoderDecoder();
             configCommunication();
             configInboundStrategy();
             configOutboundStrategy();
-        }catch (Exception e) {
-            System.out.println("服务启动失败");
+            this.start = true;
+        }catch (ErrorCodeException e) {
+            System.out.println("服务启动失败:" + e.getErrorCode().getMessage());
             e.printStackTrace();
+            this.start = false;
+            try {
+                this.lifeStop();
+            } catch (Exception e1) {}
             return ErrorCode.ServiceStartErr;
         }
 
@@ -129,9 +147,11 @@ public class Service implements ILifecycle {
         try{
             if (this.outboundStrategy != null){
                 this.outboundStrategy.lifeStop();
+                this.outboundStrategy = null;
             }
             if (this.inboundStrategy != null) {
                 this.inboundStrategy.lifeStop();
+                this.outboundStrategy = null;
             }
 
             for (Communicate communicate : communications) {
@@ -139,9 +159,10 @@ public class Service implements ILifecycle {
             }
             this.communications = new ArrayList<>();
             this.encoderDecoder = null;
-            this.start = false;
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            this.start = false;
         }
         return ErrorCode.Success;
     }

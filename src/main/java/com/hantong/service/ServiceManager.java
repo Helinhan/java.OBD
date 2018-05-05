@@ -24,8 +24,16 @@ public class ServiceManager {
     }
 
     public ErrorCode addService(ServerConfig serverParam) {
+        if (this.getService(serverParam.getId()) != null) {
+            return ErrorCode.Success;
+        }
+
         Service service = new Service(serverParam);
-        service.lifeStart();
+        if (serverParam.getStart()) {
+            service.lifeStart();
+        } else {
+            service.lifeStop();
+        }
         this.serviceMap.put(serverParam.getId(),service);
         return ErrorCode.Success;
     }
@@ -37,10 +45,18 @@ public class ServiceManager {
     }
 
     public ErrorCode startService(String serverId) {
-        return ErrorCode.Success;
+        Service service = this.getService(serverId);
+        if (null != service) {
+            return service.lifeStart();
+        }
+        return ErrorCode.ServiceNotExist;
     }
 
     public ErrorCode stopService(String serverId) {
-        return ErrorCode.Success;
+        Service service = this.getService(serverId);
+        if (null != service) {
+            return service.lifeStop();
+        }
+        return ErrorCode.ServiceNotExist;
     }
 }

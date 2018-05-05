@@ -42,10 +42,10 @@ public class QueueOutboundStrategy extends OutboundStrategy {
     public ErrorCode lifeStop() {
         super.lifeStop();
 
-        this.threadQueueWait.interrupt();
+        if (null != threadQueueWait) this.threadQueueWait.interrupt();
         this.threadQueueWait = null;
 
-        this.taskExecutor.destroy();
+        if (null != taskExecutor) this.taskExecutor.destroy();
         this.taskExecutor = null;
 
         return ErrorCode.Success;
