@@ -63,7 +63,6 @@ public class QueueOutboundStrategy extends OutboundStrategy {
         public RuntimeMessage runtimeMessage;
     }
 
-
     private BlockingData getBlockingData(RequestMessage req, RuntimeMessage run) {
         BlockingData data = new BlockingData();
         data.requestMessage = req;
@@ -77,7 +76,6 @@ public class QueueOutboundStrategy extends OutboundStrategy {
         return ErrorCode.Success;
     }
 
-
     /*
     这个线程才是每个流程的处理过程
      */
@@ -88,7 +86,11 @@ public class QueueOutboundStrategy extends OutboundStrategy {
         }
         @Override
         public void run() {
-            outboundProcessorChain.doReceiveMessage(this.blockingData.requestMessage,this.blockingData.runtimeMessage);
+            try {
+                outboundProcessorChain.doReceiveMessage(this.blockingData.requestMessage, this.blockingData.runtimeMessage);
+            }catch (Exception e) {
+                if (null != e) e.printStackTrace();
+            }
             processOver(this.blockingData.requestMessage,this.blockingData.runtimeMessage);
         }
     }
@@ -103,10 +105,7 @@ public class QueueOutboundStrategy extends OutboundStrategy {
                 try {
                     BlockingData blockingData = queue.take();
                     taskExecutor.execute(new ChainProcessor(blockingData));
-
-                } catch (Exception e) {
-
-                }
+                } catch (Exception e) { }
             }
         }
     }

@@ -1,11 +1,16 @@
 package com.hantong.communication;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.hantong.code.ErrorCode;
+import com.hantong.communication.component.SocketCommunicate;
+import com.hantong.exception.ErrorCodeException;
 import com.hantong.interfaces.ICodec;
 import com.hantong.interfaces.ICommunication;
 import com.hantong.interfaces.ILifecycle;
 import com.hantong.model.CommunicationConfig;
+import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
+import com.hantong.service.Service;
 import com.hantong.util.Json;
 
 import java.util.List;
@@ -13,12 +18,11 @@ import java.util.List;
 public abstract class Communicate implements ICommunication,ILifecycle {
 
     public static final String Communicate_Socket = CommunicationConfig.CommunicationName.Socket.toString();
+    protected ICodec encoderDecoder;
+
     public Communicate(ICodec code) {
         this.encoderDecoder = code;
     }
-
-
-    protected ICodec encoderDecoder;
 
     public static List<ServiceConfigField> getConfigField() {
         String config = "[{" +
@@ -38,5 +42,22 @@ public abstract class Communicate implements ICommunication,ILifecycle {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ErrorCode build(Service s, ServerConfig c) throws ErrorCodeException {
+        for (CommunicationConfig conf:c.getCommunicationConfigs())
+        {
+            if (conf.getName() == CommunicationConfig.CommunicationName.Socket) {
+                Communicate communication = new SocketCommunicate(conf.getSocketCfg(),s.getEncoderDecoder(),s);
+                if (ErrorCode.Success != communication.lifeStart()){
+                    throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+                }
+                s.getCommunications().add(communication);
+            } else {
+                throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+            }
+        }
+
+        return ErrorCode.Success;
     }
 }

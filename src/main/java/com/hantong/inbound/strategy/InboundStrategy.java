@@ -3,6 +3,7 @@ package com.hantong.inbound.strategy;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hantong.HantongApplication;
 import com.hantong.code.ErrorCode;
+import com.hantong.exception.ErrorCodeException;
 import com.hantong.inbound.chain.InboundProcessorChain;
 import com.hantong.inbound.processor.DbPersisProcessor;
 import com.hantong.inbound.processor.DefaultInboundProcessor;
@@ -11,8 +12,10 @@ import com.hantong.interfaces.IInbound;
 import com.hantong.interfaces.ILifecycle;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
+import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
 import com.hantong.model.StrategyConfig;
+import com.hantong.model.StrategyName;
 import com.hantong.service.Service;
 import com.hantong.util.Json;
 
@@ -26,12 +29,11 @@ public abstract class InboundStrategy implements IInbound,ILifecycle {
     protected Service service;
     protected StrategyConfig config;
     protected InboundProcessorChain inboundProcessorChain;
+    protected String name = this.getClass().getName();
 
     public String getName() {
         return name;
     }
-
-    protected String name = this.getClass().getName();
 
     public InboundProcessorChain getInboundProcessorChain() {
         return inboundProcessorChain;
@@ -54,22 +56,36 @@ public abstract class InboundStrategy implements IInbound,ILifecycle {
 
     @Override
     public ErrorCode lifeStart() {
-        for (String processor : config.getProcessor()) {
-            if (processor.equals(InboundProcessor.InboundProcessor_DbPersis)) {
-                DbPersisProcessor processor1 = (DbPersisProcessor)HantongApplication.getApplicationContext().getBean("DbPersisProcessor");
-                inboundProcessorChain.addProcessor(processor1);
-            } else if (processor.equals(InboundProcessor.InboundProcessor_Default)) {
-                DefaultInboundProcessor processor1 = new DefaultInboundProcessor();
-                inboundProcessorChain.addProcessor(processor1);
-            }
-        }
-        return ErrorCode.Success;
+        return InboundProcessor.build(this.getInboundProcessorChain(),this.config);
     }
 
     @Override
     public ErrorCode lifeStop() {
         this.inboundProcessorChain = null;
         return ErrorCode.Success;
+    }
+
+    public static InboundStrategy build(Service s,ServerConfig c) throws ErrorCodeException {
+        InboundStrategy result;
+        if (c.getInboundStrategy().getName() == Strategy_Default)
+        {
+            result = new DefaultInboundStrategy(s,c.getInboundStrategy());
+        }
+        else if (c.getInboundStrategy().getName() == Strategy_Block) {
+            result =  new BlockInboundStrategy(s,c.getInboundStrategy());
+        }
+        else if (c.getInboundStrategy().getName() == Strategy_Queue) {
+            result = new QueueInboundStrategy(s,c.getInboundStrategy());
+        }
+        else {
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+        }
+
+        if (ErrorCode.Success != result.lifeStart()) {
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+        }
+
+        return  result;
     }
 
     public static List<ServiceConfigField> getConfigField() {

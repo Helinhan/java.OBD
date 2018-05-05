@@ -4,6 +4,10 @@ import java.util.Date;
 
 public class RequestMessage {
 
+    public RequestMessage() {
+        this.receiveDate = new Date();
+    }
+
     public String getHardwareId() {
         return hardwareId;
     }
@@ -52,9 +56,18 @@ public class RequestMessage {
         this.acknowledge = acknowledge;
     }
 
+    public Date getReceiveDate() {
+        return receiveDate;
+    }
+
+    public void setReceiveDate(Date receiveDate) {
+        this.receiveDate = receiveDate;
+    }
+
     private String hardwareId;
     private MessageType type;
     private Date   eventDate;
+    private Date   receiveDate;
     private ReportMessage report;
     private CommandMessage command;
     private AcknowledgeMessage acknowledge;

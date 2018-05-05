@@ -2,8 +2,11 @@ package com.hantong.outbound.processor;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.hantong.code.ErrorCode;
 import com.hantong.interfaces.IOutboundProcesser;
 import com.hantong.model.ServiceConfigField;
+import com.hantong.model.StrategyConfig;
+import com.hantong.outbound.chain.OutboundProcessorChain;
 import com.hantong.util.Json;
 
 import java.util.List;
@@ -39,5 +42,18 @@ public abstract class OutboundProcessor implements IOutboundProcesser{
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ErrorCode build(OutboundProcessorChain outboundProcessorChain,StrategyConfig config){
+        for (String processor : config.getProcessor()) {
+            if (processor.equals(OutboundProcessor.OutboundProcessor_Default)) {
+                DefaultOutboundProcessor processor1 = new DefaultOutboundProcessor();
+                outboundProcessorChain.addProcessor(processor1);
+            } else if (processor.equals(OutboundProcessor.OutboundProcessor_SourceReply)) {
+                SourceReplyOutboundProcessor processor1 = new SourceReplyOutboundProcessor();
+                outboundProcessorChain.addProcessor(processor1);
+            }
+        }
+        return ErrorCode.Success;
     }
 }

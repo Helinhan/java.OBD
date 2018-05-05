@@ -64,7 +64,6 @@ public class ServiceManager {
         return ErrorCode.ServiceNotExist;
     }
 
-
     public static List<ServiceConfigField> getConfigField() {
         String config = "[" +
                 "{" +

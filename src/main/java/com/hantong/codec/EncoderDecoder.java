@@ -1,8 +1,12 @@
 package com.hantong.codec;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.hantong.code.ErrorCode;
+import com.hantong.exception.ErrorCodeException;
 import com.hantong.interfaces.ICodec;
+import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
+import com.hantong.service.Service;
 import com.hantong.util.Json;
 
 import java.util.ArrayList;
@@ -26,5 +30,14 @@ public abstract class EncoderDecoder implements ICodec {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ErrorCode build(Service s, ServerConfig c) throws ErrorCodeException {
+        if (c.getCodec().equals(EncoderDecoder.Codec_StandardEncoderDeCoder)) {
+            s.setEncoderDecoder(new StandardEncoderDeCoder());
+            return ErrorCode.Success;
+        }
+
+        throw new ErrorCodeException(ErrorCode.ServiceStartErr);
     }
 }

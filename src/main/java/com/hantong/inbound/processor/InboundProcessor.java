@@ -1,8 +1,12 @@
 package com.hantong.inbound.processor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.hantong.HantongApplication;
+import com.hantong.code.ErrorCode;
+import com.hantong.inbound.chain.InboundProcessorChain;
 import com.hantong.interfaces.IInboundProcesser;
 import com.hantong.model.ServiceConfigField;
+import com.hantong.model.StrategyConfig;
 import com.hantong.util.Json;
 
 import java.util.List;
@@ -38,5 +42,18 @@ public abstract class InboundProcessor implements IInboundProcesser {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static ErrorCode build(InboundProcessorChain inboundProcessorChain,StrategyConfig config) {
+        for (String processor : config.getProcessor()) {
+            if (processor.equals(InboundProcessor.InboundProcessor_DbPersis)) {
+                DbPersisProcessor processor1 = (DbPersisProcessor)HantongApplication.getApplicationContext().getBean("DbPersisProcessor");
+                inboundProcessorChain.addProcessor(processor1);
+            } else if (processor.equals(InboundProcessor.InboundProcessor_Default)) {
+                DefaultInboundProcessor processor1 = new DefaultInboundProcessor();
+                inboundProcessorChain.addProcessor(processor1);
+            }
+        }
+        return ErrorCode.Success;
     }
 }

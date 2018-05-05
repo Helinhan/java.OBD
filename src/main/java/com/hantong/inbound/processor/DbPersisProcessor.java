@@ -9,16 +9,15 @@ import org.springframework.stereotype.Component;
 
 @Component("DbPersisProcessor")
 public class DbPersisProcessor extends InboundProcessor {
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
     @Autowired
     DatabaseManager databaseManager;
 
     public DbPersisProcessor() {
 
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     @Override

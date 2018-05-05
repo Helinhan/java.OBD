@@ -2,10 +2,12 @@ package com.hantong.outbound.strategy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.hantong.code.ErrorCode;
+import com.hantong.exception.ErrorCodeException;
 import com.hantong.interfaces.ILifecycle;
 import com.hantong.interfaces.IOutbound;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
+import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
 import com.hantong.model.StrategyConfig;
 import com.hantong.outbound.chain.OutboundProcessorChain;
@@ -23,13 +25,11 @@ import static com.hantong.model.StrategyName.Strategy_Queue;
 public abstract class OutboundStrategy implements IOutbound,ILifecycle {
     protected Service service;
     protected StrategyConfig config;
+    protected String name = this.getClass().getName();
 
     public String getName() {
         return name;
     }
-
-    protected String name = this.getClass().getName();
-
 
     public OutboundProcessorChain getOutboundProcessorChain() {
         return outboundProcessorChain;
@@ -45,16 +45,7 @@ public abstract class OutboundStrategy implements IOutbound,ILifecycle {
 
     @Override
     public ErrorCode lifeStart(){
-        for (String processor : config.getProcessor()) {
-            if (processor.equals(OutboundProcessor.OutboundProcessor_Default)) {
-                DefaultOutboundProcessor processor1 = new DefaultOutboundProcessor();
-                outboundProcessorChain.addProcessor(processor1);
-            } else if (processor.equals(OutboundProcessor.OutboundProcessor_SourceReply)) {
-                SourceReplyOutboundProcessor processor1 = new SourceReplyOutboundProcessor();
-                outboundProcessorChain.addProcessor(processor1);
-            }
-        }
-        return ErrorCode.Success;
+        return OutboundProcessor.build(this.getOutboundProcessorChain(),this.config);
     }
 
     @Override
@@ -67,6 +58,22 @@ public abstract class OutboundStrategy implements IOutbound,ILifecycle {
         this.service.onOutboundProcessOver(requestMessage,runtimeMessage);
     }
 
+    public static OutboundStrategy build(Service s, ServerConfig c) throws ErrorCodeException {
+        OutboundStrategy result;
+        if (c.getOutboundStrategy().getName() == Strategy_Default) {
+            result = new DefaultOutboundStrategy(s,c.getOutboundStrategy());
+        } else if (c.getOutboundStrategy().getName() == Strategy_Queue) {
+            result =  new QueueOutboundStrategy(s,c.getOutboundStrategy());
+        } else {
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+        }
+
+        if (ErrorCode.Success != result.lifeStart()) {
+            throw new ErrorCodeException(ErrorCode.ServiceStartErr);
+        }
+
+        return result;
+    }
 
     public static List<ServiceConfigField> getConfigField() {
         String config = "[" +
