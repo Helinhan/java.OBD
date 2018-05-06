@@ -1,11 +1,11 @@
-package com.hantong.model;
+package com.hantong.communication;
 
 public class CommunicationConfig {
     public static enum CommunicationName {
         Socket,Mqtt,Coap;
     }
 
-    public static class Socket {
+    public static class Param {
         public Integer getPort() {
             return port;
         }
@@ -43,14 +43,14 @@ public class CommunicationConfig {
         this.name = name;
     }
 
-    public Socket getSocketCfg() {
-        return socketCfg;
+    public Param getParam() {
+        return param;
     }
 
-    public void setSocketCfg(Socket socketCfg) {
-        this.socketCfg = socketCfg;
+    public void setParam(Param param) {
+        this.param = param;
     }
 
     private CommunicationName name;
-    private Socket socketCfg;
+    private Param param;
 }

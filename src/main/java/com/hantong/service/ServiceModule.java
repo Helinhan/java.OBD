@@ -6,7 +6,7 @@ import com.hantong.codec.EncoderDecoder;
 import com.hantong.communication.Communicate;
 import com.hantong.inbound.processor.InboundProcessor;
 import com.hantong.inbound.strategy.InboundStrategy;
-import com.hantong.model.CommunicationConfig;
+import com.hantong.communication.CommunicationConfig;
 import com.hantong.model.ServerConfig;
 import com.hantong.model.StrategyConfig;
 import com.hantong.model.StrategyName;
@@ -33,11 +33,11 @@ public class ServiceModule {
         List<CommunicationConfig> communicationConfigs = new ArrayList<>();
         CommunicationConfig cf = new CommunicationConfig();
         cf.setName(CommunicationConfig.CommunicationName.Socket);
-        CommunicationConfig.Socket socketCfg = new CommunicationConfig.Socket();
+        CommunicationConfig.Param socketCfg = new CommunicationConfig.Param();
         socketCfg.setPort(5555);
-        cf.setSocketCfg(socketCfg);
+        cf.setParam(socketCfg);
         communicationConfigs.add(cf);
-        serverConfig.setCommunicationConfigs(communicationConfigs);
+        serverConfig.setCommunications(communicationConfigs);
 
         StrategyConfig inboundStrategy = new StrategyConfig();
         inboundStrategy.setName(StrategyName.Strategy_Queue);

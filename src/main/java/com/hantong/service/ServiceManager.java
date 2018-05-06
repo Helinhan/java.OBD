@@ -23,8 +23,12 @@ public class ServiceManager {
         return this.serviceMap.getOrDefault(id,null);
     }
 
-    public Map<String,Service> getAllService() {
-        return this.serviceMap;
+    public Map<String,ServerConfig> getAllService() {
+        Map<String,ServerConfig> result = new HashMap<>();
+        for (Map.Entry<String,Service> serviceEntry : this.serviceMap.entrySet()) {
+            result.put(serviceEntry.getKey(),serviceEntry.getValue().getConfig());
+        }
+        return result;
     }
 
     public ErrorCode addService(ServerConfig serverParam) {

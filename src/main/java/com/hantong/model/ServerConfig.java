@@ -1,5 +1,7 @@
 package com.hantong.model;
 
+import com.hantong.communication.CommunicationConfig;
+
 import java.util.List;
 
 public class ServerConfig {
@@ -8,7 +10,7 @@ public class ServerConfig {
     private StrategyConfig inboundStrategy;
     private StrategyConfig outboundStrategy;
     private Boolean start;
-    private List<CommunicationConfig> communicationConfigs;
+    private List<CommunicationConfig> communications;
 
     public String getCodec() {
         return codec;
@@ -20,12 +22,12 @@ public class ServerConfig {
 
     private String codec;
 
-    public List<CommunicationConfig> getCommunicationConfigs() {
-        return communicationConfigs;
+    public List<CommunicationConfig> getCommunications() {
+        return communications;
     }
 
-    public void setCommunicationConfigs(List<CommunicationConfig> communicationConfigs) {
-        this.communicationConfigs = communicationConfigs;
+    public void setCommunications(List<CommunicationConfig> communications) {
+        this.communications = communications;
     }
 
     public String getName() {

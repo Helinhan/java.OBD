@@ -1,34 +1,23 @@
 package com.hantong.service;
 
 import com.hantong.codec.EncoderDecoder;
-import com.hantong.codec.StandardEncoderDeCoder;
 import com.hantong.code.ErrorCode;
 import com.hantong.communication.Communicate;
-import com.hantong.communication.component.SocketCommunicate;
 import com.hantong.exception.ErrorCodeException;
-import com.hantong.inbound.strategy.BlockInboundStrategy;
-import com.hantong.inbound.strategy.DefaultInboundStrategy;
 import com.hantong.inbound.strategy.InboundStrategy;
-import com.hantong.inbound.strategy.QueueInboundStrategy;
 import com.hantong.interfaces.ILifecycle;
 import com.hantong.interfaces.IMonitor;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
-import com.hantong.model.CommunicationConfig;
 import com.hantong.model.Pair;
 import com.hantong.model.ServerConfig;
-import com.hantong.outbound.strategy.DefaultOutboundStrategy;
 import com.hantong.outbound.strategy.OutboundStrategy;
-import com.hantong.outbound.strategy.QueueOutboundStrategy;
 import com.hantong.util.Echo;
 
 import java.util.*;
 
-import static com.hantong.model.StrategyName.Strategy_Block;
-import static com.hantong.model.StrategyName.Strategy_Default;
-import static com.hantong.model.StrategyName.Strategy_Queue;
-
 public class Service implements ILifecycle,IMonitor {
+
     private ServerConfig config;
     private Boolean start = Boolean.FALSE;
     protected InboundStrategy inboundStrategy;
@@ -56,6 +45,14 @@ public class Service implements ILifecycle,IMonitor {
     public Service(ServerConfig config){
         this.config = config;
         this.communications = new ArrayList<>();
+    }
+
+    public ServerConfig getConfig() {
+        return config;
+    }
+
+    public void setConfig(ServerConfig config) {
+        this.config = config;
     }
 
     public Boolean getStart() {

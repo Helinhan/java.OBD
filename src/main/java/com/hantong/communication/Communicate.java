@@ -8,7 +8,6 @@ import com.hantong.interfaces.ICodec;
 import com.hantong.interfaces.ICommunication;
 import com.hantong.interfaces.ILifecycle;
 import com.hantong.interfaces.IMonitor;
-import com.hantong.model.CommunicationConfig;
 import com.hantong.model.ServerConfig;
 import com.hantong.model.ServiceConfigField;
 import com.hantong.service.Service;
@@ -47,10 +46,10 @@ public abstract class Communicate implements ICommunication,ILifecycle,IMonitor 
     }
 
     public static ErrorCode build(Service s, ServerConfig c) throws ErrorCodeException {
-        for (CommunicationConfig conf:c.getCommunicationConfigs())
+        for (CommunicationConfig conf:c.getCommunications())
         {
             if (conf.getName() == CommunicationConfig.CommunicationName.Socket) {
-                Communicate communication = new SocketCommunicate(conf.getSocketCfg(),s.getEncoderDecoder(),s);
+                Communicate communication = new SocketCommunicate(conf.getParam(),s.getEncoderDecoder(),s);
                 if (ErrorCode.Success != communication.lifeStart()){
                     throw new ErrorCodeException(ErrorCode.ServiceStartErr);
                 }

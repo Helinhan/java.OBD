@@ -7,7 +7,7 @@ import com.hantong.interfaces.ICodec;
 import com.hantong.message.MessageType;
 import com.hantong.message.RequestMessage;
 import com.hantong.message.RuntimeMessage;
-import com.hantong.model.CommunicationConfig;
+import com.hantong.communication.CommunicationConfig;
 import com.hantong.service.Service;
 import com.hantong.util.Json;
 import io.netty.bootstrap.ServerBootstrap;
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class SocketCommunicate extends Communicate {
 
-    private CommunicationConfig.Socket config;
+    private CommunicationConfig.Param config;
     private Service service;
     private Thread threadSocketWait;
     private SocketCommunicate that;
@@ -72,7 +72,7 @@ public class SocketCommunicate extends Communicate {
         this.handlerContextStringMap.remove(ctx);
     }
 
-    public SocketCommunicate(CommunicationConfig.Socket conf, EncoderDecoder codec,Service servic) {
+    public SocketCommunicate(CommunicationConfig.Param conf, EncoderDecoder codec, Service servic) {
         super(codec);
         this.config = conf;
         this.service = servic;
