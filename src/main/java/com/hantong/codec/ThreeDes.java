@@ -28,7 +28,7 @@ public class ThreeDes {
             e1.printStackTrace();
         } catch (javax.crypto.NoSuchPaddingException e2) {
             e2.printStackTrace();
-        } catch (java.lang.Exception e3) {
+        } catch (Exception e3) {
             e3.printStackTrace();
         }
         return null;
@@ -50,7 +50,7 @@ public class ThreeDes {
             e2.printStackTrace();
         } catch (javax.crypto.IllegalBlockSizeException e2) {
             e2.printStackTrace();
-        }catch (java.lang.Exception e3) {
+        }catch (Exception e3) {
 
             e3.printStackTrace();
             //System.out.println(src.toString());
@@ -77,7 +77,7 @@ public class ThreeDes {
             e1.printStackTrace();
         } catch (javax.crypto.NoSuchPaddingException e2) {
             e2.printStackTrace();
-        } catch (java.lang.Exception e3) {
+        } catch (Exception e3) {
             e3.printStackTrace();
         }
         return null;
@@ -97,7 +97,7 @@ public class ThreeDes {
             e2.printStackTrace();
         } catch (javax.crypto.IllegalBlockSizeException e2) {
             e2.printStackTrace();
-        }catch (java.lang.Exception e3) {
+        }catch (Exception e3) {
 
             e3.printStackTrace();
             //System.out.println(src.toString());

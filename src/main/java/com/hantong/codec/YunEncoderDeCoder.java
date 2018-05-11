@@ -99,7 +99,7 @@ public class YunEncoderDeCoder  extends EncoderDecoder  {
             ThreeDes des= new ThreeDes();
             byte[] dcode=des.decryptMode(devicekey,bcode);
             //业务处理开始
-            Business business= new Business(dcode[0]);
+           // Business business= new Business(dcode[0]);
 
             for (int i=0;i<dcode.length;i++){
                 String c=Integer.toHexString(dcode[i]&0xff);
