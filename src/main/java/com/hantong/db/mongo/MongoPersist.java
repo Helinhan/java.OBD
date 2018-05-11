@@ -56,4 +56,11 @@ public class MongoPersist extends DatabasePersist {
         query.addCriteria(Criteria.where("role").in(role));
         return this.mongoTemplate.find(query,User.class,COLLECTION_USER);
     }
+
+//    @Override
+    public ErrorCode delUser(String name) {
+        Query query = new Query(Criteria.where("name").is(name));
+        this.mongoTemplate.remove(query,COLLECTION_USER);
+        return ErrorCode.Success;
+    }
 }

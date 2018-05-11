@@ -14,6 +14,7 @@ import java.util.Map;
 @Secured({Role.ADMIN})
 @RestController
 @RequestMapping(value="/api/v1/")
+@CrossOrigin
 public class Service {
 
     @Autowired

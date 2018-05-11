@@ -11,7 +11,8 @@ public class Echo {
     }
 
     public static void color(Ansi.Color color,String str) {
-        System.out.println(ansi().eraseScreen().fg(color).a(str).reset());
+        //System.out.println(ansi().eraseScreen().fg(color).a(str).reset());
+        System.out.println(str);
     }
 
     public static void red(String str) {

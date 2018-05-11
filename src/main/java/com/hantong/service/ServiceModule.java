@@ -28,13 +28,13 @@ public class ServiceModule {
         serverConfig.setName("Service_name_001");
         serverConfig.setStart(Boolean.TRUE);
 
-        serverConfig.setCodec(EncoderDecoder.Codec_StandardEncoderDeCoder);
+        serverConfig.setCodec(EncoderDecoder.Codec_YunEncoderDeCoder);
 
         List<CommunicationConfig> communicationConfigs = new ArrayList<>();
         CommunicationConfig cf = new CommunicationConfig();
         cf.setName(CommunicationConfig.CommunicationName.Socket);
         CommunicationConfig.Param socketCfg = new CommunicationConfig.Param();
-        socketCfg.setPort(5555);
+        socketCfg.setPort(7000);
         cf.setParam(socketCfg);
         communicationConfigs.add(cf);
         serverConfig.setCommunications(communicationConfigs);
@@ -45,7 +45,7 @@ public class ServiceModule {
         inboundStrategy.setMaxPoolSize(10);
         inboundStrategy.setCorePoolSize(2);
         List<String> inProcessor = new ArrayList<>();
-        inProcessor.add(InboundProcessor.InboundProcessor_DbPersis);
+        //inProcessor.add(InboundProcessor.InboundProcessor_DbPersis);
         inProcessor.add(InboundProcessor.InboundProcessor_Default);
         inboundStrategy.setProcessor(inProcessor);
         serverConfig.setInboundStrategy(inboundStrategy);
@@ -57,7 +57,7 @@ public class ServiceModule {
         outboundStrategy.setCorePoolSize(2);
         List<String> outProcessor = new ArrayList<>();
         outProcessor.add(OutboundProcessor.OutboundProcessor_Default);
-        outProcessor.add(OutboundProcessor.OutboundProcessor_SourceReply);
+        //outProcessor.add(OutboundProcessor.OutboundProcessor_SourceReply);
         outboundStrategy.setProcessor(outProcessor);
         serverConfig.setOutboundStrategy(outboundStrategy);
 

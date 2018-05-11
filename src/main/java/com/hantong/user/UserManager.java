@@ -2,6 +2,7 @@ package com.hantong.user;
 
 import com.hantong.application.ApplicationContext;
 import com.hantong.code.ErrorCode;
+import com.hantong.db.mongo.MongoPersist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -32,5 +33,10 @@ public class UserManager {
 
     public List<User> findUserByRole(String role) {
         return ApplicationContext.getDatabaseManager().getDbInstance().findUserByRole(role);
+    }
+
+    public ErrorCode delUser(String name) {
+        MongoPersist user =new MongoPersist();
+        return user.delUser(name);
     }
 }

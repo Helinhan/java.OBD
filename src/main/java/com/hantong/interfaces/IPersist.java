@@ -13,4 +13,5 @@ public interface IPersist {
     User findUser(String name);
     ErrorCode addUser(User user);
     List<User> findUserByRole(String role);
+//    ErrorCode delUser(String name);
 }

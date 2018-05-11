@@ -15,11 +15,17 @@ import java.util.List;
 
 public abstract class EncoderDecoder implements ICodec,IMonitor {
     public static final String Codec_StandardEncoderDeCoder = "StandardEncoderDeCoder";
+    public static final String Codec_YunEncoderDeCoder = "YunEncoderDeCoder";
     public static List<ServiceConfigField> getConfigField() {
         String config = "[" +
                 "    {" +
                 "      \"name\": \""+Codec_StandardEncoderDeCoder+"\"," +
                 "      \"title\": \"标准JSON编解码\"," +
+                "      \"description\": \"标准JSON编解码,对于解析输入的标准JSON字符串格式\"" +
+                "    }," +
+                "    {" +
+                "      \"name\": \""+Codec_YunEncoderDeCoder+"\"," +
+                "      \"title\": \"tcp\"," +
                 "      \"description\": \"标准JSON编解码,对于解析输入的标准JSON字符串格式\"" +
                 "    }" +
                 "  ]";
@@ -36,6 +42,9 @@ public abstract class EncoderDecoder implements ICodec,IMonitor {
     public static ErrorCode build(Service s, ServerConfig c) throws ErrorCodeException {
         if (c.getCodec().equals(EncoderDecoder.Codec_StandardEncoderDeCoder)) {
             s.setEncoderDecoder(new StandardEncoderDeCoder());
+            return ErrorCode.Success;
+        } else if (c.getCodec().equals(EncoderDecoder.Codec_YunEncoderDeCoder)) {
+            s.setEncoderDecoder(new YunEncoderDeCoder());
             return ErrorCode.Success;
         }
 
